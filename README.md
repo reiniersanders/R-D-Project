@@ -2,11 +2,11 @@
 Team 04
 
 Captain: 
-Laurens Kubat
+Laurens Kubat.
 
 Members:
-Reinier Sanders
-Willem Coster
-Ferran van der Have
-Wout van den Berg
-Wouter van Battum
+Reinier Sanders,
+Willem Coster,
+Ferran van der Have,
+Wout van den Berg,
+Wouter van Battum.
