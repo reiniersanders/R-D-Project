@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Hashiwokakero</string>
     <string name="score">Score</string>
+    <string name="restart">restart</string>
     <string name="level">Level</string>
     <string name="textview">Ding1</string>
     <string name="textview1">Ding2</string>

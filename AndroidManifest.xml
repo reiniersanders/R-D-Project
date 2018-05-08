@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.willemcoster.hashiwokakero">
+    package="project.randd">
 
     <application
         android:allowBackup="true"
@@ -18,8 +18,8 @@
         </activity>
 
         <activity
-            android:name=".OtherActivity"
-            android:parentActivityName="com.example.willemcoster.hashiwokakero.Select">
+            android:name=".GameActivity"
+            android:parentActivityName="project.randd.Select">
         </activity>
     </application>
 
