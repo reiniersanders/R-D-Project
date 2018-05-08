@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:paddingLeft="16dp"
+android:paddingRight="16dp"
+android:orientation="vertical"
+xmlns:tools="http://schemas.android.com/tools"
+tools:context=".GameActivity">
+
+    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/gridview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnWidth="90dp"
+        android:numColumns="7"
+        android:verticalSpacing="10dp"
+        android:horizontalSpacing="2dp"
+        android:stretchMode="columnWidth"
+        android:gravity="center"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context=".GameActivity">
+
+    </GridView>
+
+    <Button
+        android:id="@+id/restartLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/restart"
+        android:onClick="restartLevel"
+        android:layout_gravity="center"
+        tools:layout_editor_absoluteX="136dp"
+        tools:layout_editor_absoluteY="65dp"/>
+
+</LinearLayout>
