@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".OtherActivity">
+
+    <Button
+        android:id="@+id/scorePlus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/score"
+        android:onClick="scorePlus"
+        android:layout_gravity="center"
+        tools:layout_editor_absoluteX="136dp"
+        tools:layout_editor_absoluteY="65dp"/>
+
+    <Button
+        android:id="@+id/LevelPlus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/level"
+        android:onClick="levelPlus"
+        android:layout_gravity="center"
+        tools:layout_editor_absoluteX="136dp"
+        tools:layout_editor_absoluteY="65dp"/>
+
+    <TextView
+        android:id="@+id/scoreView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/textview" />
+
+    <TextView
+        android:id="@+id/levelView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/textview1" />
+</LinearLayout>
