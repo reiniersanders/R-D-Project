@@ -15,19 +15,21 @@ import java.util.Map;
  * @author Laurens
  */
 public class Updater {
-    private Map<String,API> CurrentPairs;
+    private Map<PairTradeType,API> CurrentPairs;
     private APIFetcher fetcher;
     
     //Updater is created 
     public Updater(){
-        this.CurrentPairs = new HashMap<String, API>();
+        this.CurrentPairs = new HashMap<PairTradeType, API>();
         this.fetcher = new APIFetcher();
     }
     
     // Add a pair to the current list
-    public void AddPair(String pair, String Exchange){
-        if (!CurrentPairs.containsKey(pair)){
-            this.CurrentPairs.put(pair, fetcher.GetFormat(pair, Exchange));
+    // Add support for different endppoints
+    public void AddPair(String Endpoint, String Pair, String Exchange){
+        PairTradeType endPoint = new PairTradeType(Pair, Endpoint);
+        if (!CurrentPairs.containsKey(endPoint)){
+            this.CurrentPairs.put(endPoint, fetcher.GetFormat(endPoint, Exchange));
         }
     }
     
