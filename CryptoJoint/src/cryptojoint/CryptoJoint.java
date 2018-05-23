@@ -15,11 +15,14 @@ import java.util.HashMap;
 public class CryptoJoint {
 
     /**
-     * @param args the command line arguments
+     * Example of how to call Updater, currently supports 
+     * depth, trades, aggTrades
+     * NOT SUPPORTED: KLINE data, 24h ticker, symbol price ticker and 
+     * orderbook ticker
      */
     public static void main(String[] args) throws IOException {
         Updater updater = new Updater();
-        updater.AddPair("ETHBTC", "Binance");
+        updater.AddPair("ticker/24h", "ETHBTC", "Binance");
         HashMap test = updater.GetUpdate();
         System.out.println("testmap:");
         System.out.println(test.toString());
