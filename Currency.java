@@ -1,5 +1,3 @@
-Hier is de Currency class:
-
 public class Currency {
     private String name;
     private double value;
