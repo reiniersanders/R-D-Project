@@ -19,6 +19,9 @@ public class CryptoJoint {
      * depth, trades, aggTrades
      * NOT SUPPORTED: KLINE data, 24h ticker, symbol price ticker and 
      * orderbook ticker
+     * see:
+     * https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md 
+     * for more info on data types
      */
     public static void main(String[] args) throws IOException {
         Updater updater = new Updater();
