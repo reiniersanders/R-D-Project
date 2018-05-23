@@ -5,6 +5,7 @@
  */
 package cryptojoint;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -34,12 +35,17 @@ public class API {
     public String makeCall() throws UnsupportedEncodingException, MalformedURLException, IOException{
         String charset = "UTF-8";
         String symbol = this.pair;
-
-        String query = String.format("symbol=%s", 
+        String query = String.format("?symbol=%s", 
         URLEncoder.encode(symbol, charset));
-        URLConnection connection = new URL(url + "?" + query).openConnection();
+        URLConnection connection = new URL(url  + query).openConnection();
         connection.setRequestProperty("Accept-Charset", charset);
-        InputStream response = connection.getInputStream();
-        return response.toString();
+        InputStream stream = connection.getInputStream();
+        ByteArrayOutputStream responseBody = new ByteArrayOutputStream();
+        byte buffer[] = new byte[1024];
+        int bytesRead = 0;
+        while ((bytesRead = stream.read(buffer)) > 0) {
+            responseBody.write(buffer, 0, bytesRead);
+        }
+        return responseBody.toString();
     } 
 }
