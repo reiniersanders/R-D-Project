@@ -19,25 +19,25 @@ import java.net.URLEncoder;
  * @author Laurens
  */
 public class API {
-    private String pair;
+    private PairTradeType pair;
     private String url;
     
-    public API(String pair, String url){
+    public API(PairTradeType pair, String url){
         this.pair = pair;
         this.url = url;
     }
     
     public String getPair(){
-        return this.pair;
+        return this.pair.getPair();
     }
     
     //Makes a Get request
     public String makeCall() throws UnsupportedEncodingException, MalformedURLException, IOException{
         String charset = "UTF-8";
-        String symbol = this.pair;
+        String symbol = this.pair.getPair();
         String query = String.format("?symbol=%s", 
         URLEncoder.encode(symbol, charset));
-        URLConnection connection = new URL(url  + query).openConnection();
+        URLConnection connection = new URL(url + pair.getEndPoint() + query).openConnection();
         connection.setRequestProperty("Accept-Charset", charset);
         InputStream stream = connection.getInputStream();
         ByteArrayOutputStream responseBody = new ByteArrayOutputStream();
