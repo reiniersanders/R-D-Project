@@ -5,6 +5,9 @@
  */
 package cryptojoint;
 
+import java.io.IOException;
+import java.util.HashMap;
+
 /**
  *
  * @author Laurens
@@ -14,8 +17,12 @@ public class CryptoJoint {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    public static void main(String[] args) throws IOException {
+        Updater updater = new Updater();
+        updater.AddPair("ETHBTC", "Binance");
+        HashMap test = updater.GetUpdate();
+        System.out.println("testmap:");
+        System.out.println(test.toString());
     }
     
 }
