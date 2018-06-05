@@ -23,7 +23,10 @@ public class Updater {
         this.fetcher = new APIFetcher();
     }
     
-    
+    public ArrayList<CurrencyTuple> GetSymbols(String Exchange) throws IOException{
+        ArrayList<CurrencyTuple> retList = fetcher.getSymbols(Exchange);
+        return retList;
+    }
 
    /**
     * Returns an ArrayList of CurrencyTuple which contains the the price and two
