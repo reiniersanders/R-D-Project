@@ -5,47 +5,14 @@
  */
 package cryptojoint;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 
 /**
  *
  * @author Laurens
  */
-public class API {
-    private PairTradeType pair;
-    private String url;
-    
-    public API(PairTradeType pair, String url){
-        this.pair = pair;
-        this.url = url;
-    }
-    
-    public String getPair(){
-        return this.pair.getPair();
-    }
-    
-    //Makes a Get request
-    public String makeCall() throws UnsupportedEncodingException, MalformedURLException, IOException{
-        String charset = "UTF-8";
-        String symbol = this.pair.getPair();
-        String query = String.format("?symbol=%s", 
-        URLEncoder.encode(symbol, charset));
-        URLConnection connection = new URL(url + pair.getEndPoint() + query).openConnection();
-        connection.setRequestProperty("Accept-Charset", charset);
-        InputStream stream = connection.getInputStream();
-        ByteArrayOutputStream responseBody = new ByteArrayOutputStream();
-        byte buffer[] = new byte[1024];
-        int bytesRead = 0;
-        while ((bytesRead = stream.read(buffer)) > 0) {
-            responseBody.write(buffer, 0, bytesRead);
-        }
-        return responseBody.toString();
-    } 
+public interface API { 
+    public Double makeCall() throws UnsupportedEncodingException, MalformedURLException, IOException;   
 }
