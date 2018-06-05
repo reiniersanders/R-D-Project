@@ -6,6 +6,7 @@
 package cryptojoint;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -25,10 +26,8 @@ public class CryptoJoint {
      */
     public static void main(String[] args) throws IOException {
         Updater updater = new Updater();
-        updater.AddPair("ticker/24h", "ETHBTC", "Binance");
-        HashMap test = updater.GetUpdate();
-        System.out.println("testmap:");
-        System.out.println(test.toString());
+        APIBinance api = new APIBinance("ETHBTC", "https://api.binance.com/api/v3/ticker/price");
+        Double result = api.makeCall();
+        System.out.println(result);
     }
-    
 }
