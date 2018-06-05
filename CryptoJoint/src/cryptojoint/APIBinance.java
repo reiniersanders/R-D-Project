@@ -28,6 +28,7 @@ public class APIBinance implements API {
         this.url = url;
     }
     
+    //TODO Make sure the return is correcty formatted
     public ArrayList<CurrencyTuple> getSymbols() throws MalformedURLException, IOException{
         String symbolsUrl = "https://api.binance.com/api/v1/ticker/24hr";
         String charset = "UTF-8";
