@@ -17,16 +17,16 @@ public class APIFetcher {
     public APIFetcher(){
     }
     
-    public API GetFormat(PairTradeType PairEndpoint, String Exchange){
+    public APIBinance GetFormat(Currency toBuy, Currency toSell, String Exchange){
         switch (Exchange) {
-            case "Binance": return MakeBinanceAPI(PairEndpoint);
+            case "Binance": return MakeBinanceAPI((toSell.getName() + toBuy.getName()));
             default: return null;
         }
         
     }
     
-    public API MakeBinanceAPI(PairTradeType PairEndpoint){
-        return new API(PairEndpoint,  "https://api.binance.com/api/v1/");
+    public APIBinance MakeBinanceAPI(String Endpoint){
+        return new APIBinance(Endpoint.toUpperCase(),  "https://api.binance.com/api/v1/");
     }
     
     
