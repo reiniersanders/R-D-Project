@@ -15,12 +15,8 @@ import java.util.HashMap;
  */
 public class CryptoJoint {
 
-    /**
-     * Example of how to call Updater, currently supports 
-     * depth, trades, aggTrades
-     * NOT SUPPORTED: KLINE data, 24h ticker, symbol price ticker and 
-     * orderbook ticker
-     * see:
+    /** 
+     * main file for testing purposes
      * https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md 
      * for more info on data types
      */
