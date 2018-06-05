@@ -20,7 +20,8 @@ public class APIFetcher {
     }
     
     /**
-     *
+     *  gets the format for an exchange API, since symbol formatting is different
+     * per exchange, this structure is needed
      * @param toBuy The currency which is to be bought
      * @param toSell The currency to be sold
      * @param Exchange the Exchange on which to buy/sell
