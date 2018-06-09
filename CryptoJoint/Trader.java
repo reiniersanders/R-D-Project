@@ -5,11 +5,12 @@
  */
 package trader.app;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -18,25 +19,32 @@ import java.util.TimerTask;
 public class Trader extends TimerTask{
     private Updater updater;
     private String exchange;
-    private ArrayList<CurrencyTuple> currencies;
     private static int id;
     private ArrayList<Trade> trades;
-    private Map wallet;
+    private Wallet wallet;
+    private Client client;
     /**
     * Constructor of Trader.
     * Only to be used once.
     * 
     * @param updater    The updater of this trader.
     * @param exchange   The exchange of this trader.
+    * @param client     The client of this trader.
     */
-    public Trader(Updater updater, String exchange)
+    public Trader(Updater updater, Client client, String exchange)
     {
         this.updater=updater;
         this.exchange=exchange;
-        currencies = updater.GetSymbols(exchange);
+        
+        this.client=client;
+        try {
+            client.setCurrencies(updater.GetSymbols(exchange));
+        } catch (IOException ex) {
+            Logger.getLogger(Trader.class.getName()).log(Level.SEVERE, null, ex);
+        }
         id=1;
         trades = new ArrayList();
-        wallet = new HashMap();
+        wallet = client.getWallet();
         start();
     }
     /**
@@ -64,11 +72,7 @@ public class Trader extends TimerTask{
      */
     public void addWallet(Currency currency, double amount)
     {
-        if (wallet.containsKey(currency))
-        {
-            amount=amount+(double)wallet.get(currency);
-        }
-        wallet.put(currency, amount);
+        wallet.addHolding(currency.getName(), amount);
     }
     /**
      * Changes the list of currencies that the trader has at the moment
@@ -78,7 +82,12 @@ public class Trader extends TimerTask{
      */
     public void updateTrader()
     {
-        this.currencies=updater.GetUpdate(currencies, exchange);
+        ArrayList<CurrencyTuple> currencies = client.getCurrencies();
+        try {
+            client.setCurrencies(updater.GetUpdate(currencies, exchange));
+        } catch (IOException ex) {
+            Logger.getLogger(Trader.class.getName()).log(Level.SEVERE, null, ex);
+        }
         for (Trade trade: trades)
         {
             trade.updateValues();
@@ -103,31 +112,30 @@ public class Trader extends TimerTask{
         }
     }
     /**
-     * Creates an arraylist with all the currencytuples with USDT as not owned.
-     * This means you get the dollar values of all the currencies.
-     * 
-     * @return This is the arraylist of all the currencies with their dollar values.
+     * Simple getter.
+     * @return A list of all the trades.
      */
-    public ArrayList<Currency> currencyValues()
+    public ArrayList<Trade> getTrades()
     {
-        ArrayList<Currency> currencyvalues = new ArrayList();
-        for (CurrencyTuple currency:currencies)
-        {
-            if(currency.getNotOwned().getName().equals("USDT"))
-                currencyvalues.add(new Currency(currency.getOwned().getName(), currency.getPrice()));
-        }
-        return currencyvalues;
+        return trades;
+    }
+    /**
+     * Simple getter.
+     * @return The wallet of the client.
+     */
+    public Wallet getWallet()
+    {
+        return client.getWallet();
+    }
+    /**
+     * Simple getter.
+     * @return The currency list of the client.
+     */
+    public ArrayList<CurrencyTuple> getCurrencies()
+    {
+        return client.getCurrencies();
     }
     
-    public void updateWallet()
-    {
-        
-    }
-    
-    public ArrayList<CurrencyTuple> getCurrencyList()
-    {
-        return currencies;
-    }
     /**
      * Makes a new trade and adds it to the list of trades.
      * This can be both a buy trade or a sell trade.
@@ -154,7 +162,6 @@ public class Trader extends TimerTask{
     public void run() {
         updateTrader();
         doTrades();
-        updateWallet();
     }
 
 }
