@@ -47,12 +47,15 @@ public class Trade {
      */
     public void updateValues()
     {
-        ArrayList<CurrencyTuple> currencies = trader.getCurrencyList();
+        ArrayList<CurrencyTuple> currencies = trader.getCurrencies();
         for (CurrencyTuple currency: currencies)
         {
             if (currencytuple.getOwned().getName().equals(currency.getOwned().getName()) && 
-                currencytuple.getNotOwned().getName().equals(currency.getNotOwned().getName()))
+                    currencytuple.getNotOwned().getName().equals(currency.getNotOwned().getName()))
                 currencytuple.setPrice(currency.getPrice());
+            else if (currencytuple.getOwned().getName().equals(currency.getNotOwned().getName()) &&
+                     currencytuple.getNotOwned().getName().equals(currency.getOwned().getName()))
+                currencytuple.setPrice((1/currency.getPrice()));
         }
     }
     /**
