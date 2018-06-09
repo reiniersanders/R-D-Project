@@ -20,49 +20,63 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     Client client;
+    Trader trader;
+    Updater updater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        client = new Client();
+
+        client = new Client(this);
+        updater = new Updater();
+        trader = new Trader(updater, client,"Binance");
+        client.setTrader(trader);
 
         //kijkt of er data geladen is (en laad deze meteen)
         if (!loadData()) {
-            //maak nieuwe data aan
-            List<Currency> currencies = new ArrayList();
-            currencies.add(new Currency("btc", 7500.0));
-            currencies.add(new Currency("eth", 500.0));
-            currencies.add(new Currency("trx", 0.06));
-
-            client.setCurrencies(currencies);
-            Map<Currency, Double> wallet = new HashMap<>();
-            client.setWallet(new Wallet(wallet, 0.0));
-            client.getWallet().setHolding(currencies.get(1), 30.0);
+            Map<String, Double> wallet = new HashMap<>();
+            client.setWallet(new Wallet(wallet, 0.0, client));
         }
 
         //enkel om te testen
+        /*
+        updateViews();
         TextView currenciesView = findViewById(R.id.Currencies);
         TextView walletView = findViewById(R.id.Wallet);
 
-        Currency btc = client.getCurrencies().get(0);
-        client.getWallet().setHolding(btc, client.getWallet().getHolding(btc) + 1);
+        client.printCurrencies(currenciesView);
+        System.out.println("");
+        client.getWallet().printWallet(walletView, "USDT");
+        */
+    }
+
+    /**
+     *  this gets called whenever new trade information is received and the views should be updated
+     */
+    public void updateViews(){
+        TextView currenciesView = findViewById(R.id.Currencies);
+        TextView walletView = findViewById(R.id.Wallet);
 
         client.printCurrencies(currenciesView);
         System.out.println("");
-        client.getWallet().printWallet(walletView, client.getCurrencies().get(2));
-
+        client.getWallet().printWallet(walletView, "USDT");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        client.getWallet().setBalance(client.getWallet().getBalance() + 5);
-        saveData();
+        //saveData();
     }
 
+    /**
+     * @return returns if data is loaded successfully
+     */
     public boolean loadData(){
+        //not finished yet
+        return false;
+        /*
         //laad alle data die opgeslagen staat op het apparaat, als er niks staat return false
         File file = new File(getDir("data", Context.MODE_PRIVATE), "wallet");
         if (file.exists()) {
@@ -76,11 +90,14 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        return false;
+        return false;*/
     }
 
+    /**
+     *  saves wallet and trader data to device
+     */
     public void saveData(){
-        //sla de wallet en alle currencies met huidige waarde op
+        //not finished yet
         File file = new File(getDir("data", Context.MODE_PRIVATE), "wallet");
         if (!file.exists()) {
             try {
