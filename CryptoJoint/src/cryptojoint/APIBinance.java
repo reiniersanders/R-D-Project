@@ -29,6 +29,7 @@ public class APIBinance implements API {
     }
     
     //TODO Make sure the return is correcty formatted
+    @Override
     public ArrayList<CurrencyTuple> getSymbols() throws MalformedURLException, IOException{
         String symbolsUrl = "https://api.binance.com/api/v1/ticker/24hr";
         String charset = "UTF-8";
@@ -36,8 +37,34 @@ public class APIBinance implements API {
         URLConnection connection = new URL(symbolsUrl).openConnection();
         connection.setRequestProperty("Accept-Charset", charset);
         InputStream stream = connection.getInputStream();
-        
-        return null;
+        ByteArrayOutputStream responseBody = new ByteArrayOutputStream();
+        byte buffer[] = new byte[1024];
+        int bytesRead = 0;
+        while ((bytesRead = stream.read(buffer)) > 0) {
+            responseBody.write(buffer, 0, bytesRead);
+        }
+        String responseString = responseBody.toString();
+        int position = 0;
+        ArrayList<CurrencyTuple> toReturn = new ArrayList<>();
+        for (int i = 0; i < 100; i++){
+            position = responseString.indexOf("symbol", position + 6);
+            String symbols = responseString.substring(position + 9, position + 15);
+            String symbolOwned = symbols.substring(0, 3);
+            String symbolNotOwned = symbols.substring(3, 6);
+            if (symbolOwned.contains("USD")) {
+                symbolOwned = symbolOwned.concat("T");
+            }
+            if (symbolNotOwned.contains("USD")) {
+                symbolOwned = symbolNotOwned.concat("T");
+            }
+            Currency CurrencyOwned = new Currency(symbolOwned, 0.0);
+            Currency CurrencyNotOwned = new Currency(symbolNotOwned, 0.0);
+            CurrencyTuple tuple = new CurrencyTuple(CurrencyOwned, CurrencyNotOwned);
+            System.out.println(CurrencyOwned.getName());
+            System.out.println(CurrencyNotOwned.getName());
+            toReturn.add(tuple);
+        }
+        return toReturn;
     }
         
     //Makes a Get request for a price
