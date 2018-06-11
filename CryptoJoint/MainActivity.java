@@ -1,15 +1,22 @@
 package com.pt04.cryptojoint;
 
+import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.design.widget.CoordinatorLayout;
 import android.util.Log;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +35,19 @@ public class MainActivity extends AppCompatActivity {
     Client client;
     Trader trader;
     Updater updater;
+    private Context context;
+    private Activity activity;
+    private CoordinatorLayout layout;
+    private PopupWindow popupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        context = getApplicationContext();
+        activity = MainActivity.this;
+        layout = (CoordinatorLayout) findViewById(R.id.layout);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -41,8 +56,20 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast toast = Toast.makeText(getApplicationContext(), "Trade", Toast.LENGTH_LONG);
-                toast.show();
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+                View addProductView = inflater.inflate(R.layout.popup_trade, null);
+                popupWindow = new PopupWindow(addProductView, CoordinatorLayout.LayoutParams.WRAP_CONTENT, CoordinatorLayout.LayoutParams.WRAP_CONTENT);
+                if(Build.VERSION.SDK_INT >= 21){
+                    popupWindow.setElevation(5.0f);
+                }
+                Button cancelButton = (Button) addProductView.findViewById(R.id.buttonCancel);
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        popupWindow.dismiss();
+                    }
+                });
+                popupWindow.showAtLocation(layout, Gravity.CENTER, 0, 0);
             }
         });
 
@@ -66,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
         TextView walletView = findViewById(R.id.text_holding_map);
 
         client.printCurrencies(currenciesView);
-        System.out.println("");
         client.getWallet().printWallet(walletView, "USDT");
     }
 
@@ -141,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_refresh){
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }
