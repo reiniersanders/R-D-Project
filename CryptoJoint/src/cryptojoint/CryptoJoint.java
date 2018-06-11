@@ -22,7 +22,8 @@ public class CryptoJoint {
      */
     public static void main(String[] args) throws IOException {
         Updater updater = new Updater();
-        APIBinance api = new APIBinance("ETHBTC", "https://api.binance.com/api/v3/ticker/price");
+        APIBinance api = new APIBinance("BTCUSDT", "https://api.binance.com/api/v3/ticker/price");
+        api.getSymbols();
         Double result = api.makeCall();
         System.out.println(result);
     }
