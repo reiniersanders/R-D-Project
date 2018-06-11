@@ -9,6 +9,7 @@
     tools:showIn="@layout/activity_main">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -51,7 +52,8 @@
                         android:id="@+id/text_wallet_balance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"/>
+                        android:layout_margin="8dp"
+                        android:text="balance"/>
 
                 </LinearLayout>
 
@@ -85,7 +87,8 @@
                         android:id="@+id/text_wallet_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"/>
+                        android:layout_margin="8dp"
+                        android:text="value"/>
 
                 </LinearLayout>
 
@@ -123,7 +126,8 @@
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/text_holding_map"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="hodl map"/>
 
             </LinearLayout>
 
@@ -159,7 +163,8 @@
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/text_viewing_map"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="viewing map"/>
 
         </LinearLayout>
 
