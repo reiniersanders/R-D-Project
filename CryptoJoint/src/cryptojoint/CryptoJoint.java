@@ -23,7 +23,10 @@ public class CryptoJoint {
     public static void main(String[] args) throws IOException {
         Updater updater = new Updater();
         APIBinance api = new APIBinance("BTCUSDT", "https://api.binance.com/api/v3/ticker/price");
-        api.getSymbols();
+        ArrayList<CurrencyTuple> test = api.getSymbols();
+        for (int i = 0; i < test.size(); i++) {
+            System.out.println(test.get(i).getOwned().getName());
+        }
         Double result = api.makeCall();
         System.out.println(result);
     }
