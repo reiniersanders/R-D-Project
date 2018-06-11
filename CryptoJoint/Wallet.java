@@ -86,10 +86,12 @@ public class Wallet implements Serializable{
         text += "\ncurrencies in wallet:";
         for(Map.Entry<String, Double> currency : wallet.entrySet()){
             if (currency.getKey() != compareTo) {
-                text += "\n - " + currency.getValue() + " " + currency.getKey() + " (" + currency.getValue()*getValue(currency.getKey(), compareTo) + " " + compareTo + ")";
-            }else{
+                if (getValue(currency.getKey(), compareTo)  == null)
+                    text += "\n - " + currency.getValue() + " " + currency.getKey() + " (unknown value)";
+                else
+                    text += "\n - " + currency.getValue() + " " + currency.getKey() + " (" + currency.getValue()*getValue(currency.getKey(), compareTo) + " " + compareTo + ")";
+            }else
                 text += "\n - " + currency.getValue() + " " + currency.getKey();
-            }
         }
         t.setText(text);
     }

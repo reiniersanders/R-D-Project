@@ -21,7 +21,6 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     Client client;
     Trader trader;
-    Updater updater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,16 +29,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         client = new Client(this);
-        updater = new Updater();
-        trader = new Trader(updater, client,"Binance");
-        client.setTrader(trader);
+        Updater updater = new Updater();
 
         //kijkt of er data geladen is (en laad deze meteen)
         if (!loadData()) {
             Map<String, Double> wallet = new HashMap<>();
-            client.setWallet(new Wallet(wallet, 0.0, client));
+            client.setWallet(new Wallet(wallet, 10000.0, client)); //10000 usdt as start budget
+            trader = new Trader(updater, client, "Binance");
+            client.setTrader(trader);
         }
 
+        updateViews();
         //enkel om te testen
         /*
         updateViews();
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         TextView currenciesView = findViewById(R.id.Currencies);
         TextView walletView = findViewById(R.id.Wallet);
 
-        client.printCurrencies(currenciesView);
+        client.printCurrencies(currenciesView, "BTC");
         System.out.println("");
         client.getWallet().printWallet(walletView, "USDT");
     }
