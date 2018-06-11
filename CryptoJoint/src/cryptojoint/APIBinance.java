@@ -51,18 +51,21 @@ public class APIBinance implements API {
             String symbols = responseString.substring(position + 9, position + 15);
             String symbolOwned = symbols.substring(0, 3);
             String symbolNotOwned = symbols.substring(3, 6);
-            if (symbolOwned.contains("USD")) {
-                symbolOwned = symbolOwned.concat("T");
+            if (responseString.substring(position+9, position + 16).contains("\"")
+                    || responseString.substring(position+9, position + 16).contains("USD")){   
+                if (symbolOwned.contains("USD")) {
+                    symbolOwned = symbolOwned.concat("T");
+                }
+                if (symbolNotOwned.contains("USD")) {
+                  symbolOwned = symbolNotOwned.concat("T");
+                }
+                Currency CurrencyOwned = new Currency(symbolOwned, 0.0);
+                Currency CurrencyNotOwned = new Currency(symbolNotOwned, 0.0);
+                CurrencyTuple tuple = new CurrencyTuple(CurrencyOwned, CurrencyNotOwned);
+                System.out.println(CurrencyOwned.getName());
+                System.out.println(CurrencyNotOwned.getName());
+                toReturn.add(tuple);
             }
-            if (symbolNotOwned.contains("USD")) {
-                symbolOwned = symbolNotOwned.concat("T");
-            }
-            Currency CurrencyOwned = new Currency(symbolOwned, 0.0);
-            Currency CurrencyNotOwned = new Currency(symbolNotOwned, 0.0);
-            CurrencyTuple tuple = new CurrencyTuple(CurrencyOwned, CurrencyNotOwned);
-            System.out.println(CurrencyOwned.getName());
-            System.out.println(CurrencyNotOwned.getName());
-            toReturn.add(tuple);
         }
         return toReturn;
     }
