@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">CryptoJoint</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="wallet_balance">Wallet balance:</string>
+    <string name="wallet_value">Wallet value:</string>
+    <string name="owned_currencies">Owned currencies:</string>
+    <string name="binance">Binance:</string>
+</resources>
