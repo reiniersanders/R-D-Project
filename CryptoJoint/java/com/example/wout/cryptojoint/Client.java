@@ -1,6 +1,7 @@
 package com.example.wout.cryptojoint;
 
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -70,10 +71,9 @@ public class Client {
         //moet veranderd worden afhankelijk van frontend
         ArrayList<Currency> currencyValues = currencyValues(printAs);
         String text = "";
-        text += "currencies:";
         DecimalFormat moneyFormat = new DecimalFormat("#0.00");
         for (Currency currency : currencyValues) {
-            text += "\n " + currency.getName() + " = " + currency.getValue() + " " + printAs;
+            text += currency.getName() + " = " + currency.getValue() + " " + printAs + "\n";
         }
         t.setText(text);
     }
@@ -123,7 +123,9 @@ public class Client {
         if (wallet.getBalance() > amount) {
             wallet.setBalance(wallet.getBalance() - amount);
             trader.buyCurrency(currency, amount);
-        }
+            Toast.makeText(mainActivity, "Buy order made.", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(mainActivity, "Insufficient funds.", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -135,6 +137,9 @@ public class Client {
         if (wallet.getHolding(currency.getName()) > amount) {
             wallet.addHolding(currency.getName(), -amount);
             trader.sellCurrency(currency, amount);
+            Toast.makeText(mainActivity, "Sell order made.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(mainActivity, "Exceeding available amount.", Toast.LENGTH_SHORT).show();
         }
     }
 
