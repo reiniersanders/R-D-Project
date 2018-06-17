@@ -1,6 +1,7 @@
 package com.example.wout.cryptojoint;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +22,8 @@ public class Trader extends TimerTask{
     private Wallet wallet;
     private Client client;
     private Connection connection;
+    private ArrayList<MoneyTrade> buys;
+    private ArrayList<MoneyTrade> sells;
 
     /**
      * Constructor of Trader.
@@ -43,6 +46,8 @@ public class Trader extends TimerTask{
 
         id=1;
         trades = new ArrayList();
+        buys = new ArrayList<>();
+        sells = new ArrayList<>();
         wallet = client.getWallet();
         start();
     }
@@ -129,6 +134,26 @@ public class Trader extends TimerTask{
     {
         return trades;
     }
+
+    public void setTrades(ArrayList<Trade> trades){
+        this.trades = trades;
+    }
+
+    public void setBuys(ArrayList<MoneyTrade> buys){
+        this.buys = buys;
+    }
+
+    public ArrayList<MoneyTrade> getBuys(){
+        return buys;
+    }
+
+    public void setSells(ArrayList<MoneyTrade> sells){
+        this.sells = sells;
+    }
+
+    public ArrayList<MoneyTrade> getSells(){
+        return sells;
+    }
     /**
      * Simple getter.
      * @return The wallet of the client.
@@ -165,6 +190,68 @@ public class Trader extends TimerTask{
         trades.add(trade);
         id++;
     }
+
+    public void updateHoldings(){
+        DollarValue dollarValue = new DollarValue();
+        dollarValue.updateValues();
+
+        ArrayList<Currency> holdingValues = new ArrayList<>();
+        ArrayList<String> holdings = client.getWallet().getHoldings();
+        for(String holding : holdings){
+            ArrayList<Currency> currencyValues = client.currencyValues(holding);
+            double value = dollarValue.getValue(currencyValues);
+            if (value == 0)
+                value = dollarValue.updateValue(holding);
+            holdingValues.add(new Currency(holding, value));
+        }
+
+        client.getWallet().updateDollarValues(holdingValues);
+    }
+
+    public void buyCurrency(Currency currency, double amount){
+        buys.add(new MoneyTrade(currency, amount));
+    }
+
+    public void updateBuys(){
+        DollarValue dollarValue = new DollarValue();
+        dollarValue.updateValues();
+
+        for(MoneyTrade buy : buys) {
+            ArrayList<Currency> currencyValues = client.currencyValues(buy.getCurrency().getName());
+            System.out.println(buy.getCurrency().getName());
+            double value = dollarValue.getValue(currencyValues);
+            if (value == 0)
+                value = dollarValue.updateValue(buy.getCurrency().getName());
+            if (value != 0) {
+                System.out.println(value);
+                client.getWallet().addHolding(buy.getCurrency().getName(), buy.getAmount() / value);
+                buys.remove(buy);
+            }
+        }
+    }
+
+    public void sellCurrency(Currency currency, double amount){
+        sells.add(new MoneyTrade(currency, amount));
+    }
+
+    public void updateSells(){
+        DollarValue dollarValue = new DollarValue();
+        dollarValue.updateValues();
+
+        for(MoneyTrade sell : sells) {
+            ArrayList<Currency> currencyValues = client.currencyValues(sell.getCurrency().getName());
+            System.out.println(sell.getCurrency().getName());
+            double value = dollarValue.getValue(currencyValues);
+            if (value == 0)
+                value = dollarValue.updateValue(sell.getCurrency().getName());
+            if (value != 0) {
+                System.out.println(value);
+                client.getWallet().setBalance(client.getWallet().getBalance() + sell.getAmount() * value);
+                sells.remove(sell);
+            }
+        }
+    }
+
     /**
      * Does a couple of functions every 2 seconds.
      */
@@ -172,6 +259,10 @@ public class Trader extends TimerTask{
     public void run() {
         updateTrader();
         doTrades();
+        updateBuys();
+        updateSells();
+        updateHoldings();
+
         try {
             synchronized (this) {
                 wait(500);

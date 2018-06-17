@@ -57,8 +57,7 @@ public class APIBinance implements API {
                 Currency CurrencyOwned = new Currency(symbolOwned, 0.0);
                 Currency CurrencyNotOwned = new Currency(symbolNotOwned, 0.0);
                 CurrencyTuple tuple = new CurrencyTuple(CurrencyOwned, CurrencyNotOwned);
-                System.out.println(CurrencyOwned.getName());
-                System.out.println(CurrencyNotOwned.getName());
+                System.out.println(CurrencyOwned.getName() + " - " + CurrencyNotOwned.getName());
                 toReturn.add(tuple);
             }
         }

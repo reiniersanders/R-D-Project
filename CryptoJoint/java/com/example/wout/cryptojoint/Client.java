@@ -63,31 +63,17 @@ public class Client {
     }
 
     /**
-     * @param printAs print currencies compared to this currency
-     * @param t     the textfield that the values of the currencies need to be printed to
-     */
-    public String printCurrencies(String printAs){
-        //moet veranderd worden afhankelijk van frontend
-        String text = "";
-        //DecimalFormat moneyFormat = new DecimalFormat("#0.00");
-        for(CurrencyTuple currencyTuple : currencies){
-            if (currencyTuple.getOwned().getName().equals(printAs) || currencyTuple.getNotOwned().getName().equals(printAs))
-                text += currencyTuple.getOwned().getName() + " = " + currencyTuple.getPrice() + " " + currencyTuple.getNotOwned().getName() + "\n";
-        }
-        return text;
-    }
-
-    /**
      * @param t     the textfield that the values of the currencies (compared to dollar) need to be printed to
+     * @param printAs currency to be compared to
      */
-    public void printCurrenciesInDollar(TextView t){
+    public void printCurrencies(TextView t, String printAs){
         //moet veranderd worden afhankelijk van frontend
-        List<Currency> currencyValues = currencyValues("USDT");
+        ArrayList<Currency> currencyValues = currencyValues(printAs);
         String text = "";
         text += "currencies:";
         DecimalFormat moneyFormat = new DecimalFormat("#0.00");
-        for(Currency currency : currencyValues){
-            text += "\n " + currency.getName() + " = " + currency.getValue() + " USDT";
+        for (Currency currency : currencyValues) {
+            text += "\n " + currency.getName() + " = " + currency.getValue() + " " + printAs;
         }
         t.setText(text);
     }
@@ -136,8 +122,7 @@ public class Client {
         //koop x aantal currency met geld van balance
         if (wallet.getBalance() > amount) {
             wallet.setBalance(wallet.getBalance() - amount);
-            Currency usdt = getCurrency("USDT");
-            trader.Trademaker(true, currency, amount, usdt, 0);
+            trader.buyCurrency(currency, amount);
         }
     }
 
@@ -147,10 +132,9 @@ public class Client {
      */
     public void sell(Currency currency, double amount){
         //verkoop x aantal currency met geld van balance)
-        Currency usdt = getCurrency("USDT");
         if (wallet.getHolding(currency.getName()) > amount) {
             wallet.addHolding(currency.getName(), -amount);
-            trader.Trademaker(false, currency, amount, usdt, 0);
+            trader.sellCurrency(currency, amount);
         }
     }
 

@@ -1,10 +1,12 @@
 package com.example.wout.cryptojoint;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Laurens
  */
-public class CurrencyTuple {
+public class CurrencyTuple implements Serializable{
     private Currency owned;
     private Currency notOwned;
     private double price;

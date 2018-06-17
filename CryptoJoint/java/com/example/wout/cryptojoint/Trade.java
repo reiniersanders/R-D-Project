@@ -1,12 +1,13 @@
 package com.example.wout.cryptojoint;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author Ferran
  */
-public class Trade {
+public class Trade implements Serializable{
     public boolean buy;
     public Trader trader;
     public CurrencyTuple currencytuple;

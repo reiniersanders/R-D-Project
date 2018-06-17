@@ -10,17 +10,17 @@ import java.util.Map;
 public class Wallet implements Serializable{
     private Map<String, Double> wallet;
     private double balance;
-    private Client client;
+    private ArrayList<Currency> holdingValues;
 
     /**
      * @param wallet    a map that contains the holdings of the wallet
      * @param balance   the balance of the wallet
      * @param client    the Client of this wallet
      */
-    public Wallet(Map<String, Double> wallet, Double balance, Client client){
+    public Wallet(Map<String, Double> wallet, Double balance){
         this.wallet = wallet;
         this.balance = balance;
-        this.client = client;
+        holdingValues = new ArrayList<>();
     }
 
     public void setBalance(double balance){
@@ -65,7 +65,7 @@ public class Wallet implements Serializable{
      * @param valueAs       string of currency to which currency should be compared to
      * @return              returns how much one currency is worth in valueAs
      */
-    public Double getValue(String currencyName, String valueAs){
+    public Double getValue(String currencyName, String valueAs, Client client){
         ArrayList<Currency> currencies = client.currencyValues(valueAs);
         for(Currency currency : currencies){
             if (currency.getName().equals(currencyName))
@@ -76,25 +76,52 @@ public class Wallet implements Serializable{
 
     /**
      * @param t         textview that wallet should be printed to
-     * @param compareTo currency that wallet holdings should be compared to
+     * @param compareTo currency that wallet holdings should be compared to/USDT gives dollar value of currencies in wallet
      */
-    public void printWallet(TextView t, String compareTo){
+    public void printWallet(TextView t, String compareTo, Client client){
         //moet veranderd worden afhankelijk van frontend
         String text = "";
-        for(Map.Entry<String, Double> currency : wallet.entrySet()){
-            if (currency.getKey() != compareTo) {
-                if (getValue(currency.getKey(), compareTo) == null)
-                    text += " - " + currency.getValue() + " " + currency.getKey() + " (unknown value) \n";
-                else
-                    text += " - " + currency.getValue() + " " + currency.getKey() + " (" + currency.getValue()*getValue(currency.getKey(), compareTo) + " " + compareTo + ")\n";
-            }else
-                text += " - " + currency.getValue() + " " + currency.getKey() + "\n";
+        if (compareTo == "USDT"){
+            for(Currency currency : holdingValues){
+                text += " - " + wallet.get(currency.getName()) + " " + currency.getName() + " ($" + currency.getValue()*wallet.get(currency.getName()) + ")\n";
+            }
+        }else{
+            for (Map.Entry<String, Double> currency : wallet.entrySet()) {
+                if (currency.getKey() != compareTo) {
+                    if (getValue(currency.getKey(), compareTo, client) == null)
+                        text += " - " + currency.getValue() + " " + currency.getKey() + " (unknown value) \n";
+                    else
+                        text += " - " + currency.getValue() + " " + currency.getKey() + " (" + currency.getValue() * getValue(currency.getKey(), compareTo, client) + " " + compareTo + ")\n";
+                } else
+                    text += " - " + currency.getValue() + " " + currency.getKey() + "\n";
+            }
         }
         t.setText(text);
+    }
+
+    public ArrayList<String> getHoldings(){
+        ArrayList<String> holdings = new ArrayList<>();
+        for(Map.Entry<String, Double> currency : wallet.entrySet()){
+            holdings.add(currency.getKey());
+        }
+        return holdings;
+    }
+
+    public void updateDollarValues(ArrayList<Currency> holdingValues){
+        this.holdingValues = holdingValues;
     }
 
     public String printBalance(){
         DecimalFormat moneyFormat = new DecimalFormat("#.00");
         return "$" + moneyFormat.format(balance);
+    }
+
+    public String printWalletValue(){
+        double value = balance;
+        for(Currency holding : holdingValues){
+            value += holding.getValue() * wallet.get(holding.getName());
+        }
+        DecimalFormat moneyFormat = new DecimalFormat("#.00");
+        return "$" + moneyFormat.format(value);
     }
 }

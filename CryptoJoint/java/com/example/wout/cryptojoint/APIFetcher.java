@@ -29,7 +29,6 @@ public class APIFetcher {
             case "Binance": return MakeBinanceAPI((toSell.getName() + toBuy.getName()));
             default: return null;
         }
-
     }
 
     public ArrayList<CurrencyTuple> getSymbols(String Exchange) throws IOException{

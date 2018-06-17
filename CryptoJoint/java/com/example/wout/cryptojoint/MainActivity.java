@@ -2,14 +2,12 @@ package com.example.wout.cryptojoint;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,9 +16,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,7 +25,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -45,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     TextView currencyView;
     TextView walletView;
     TextView balanceView;
+    TextView walletValueView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         currencyView = findViewById(R.id.text_viewing_map);
         walletView = findViewById(R.id.text_holding_map);
         balanceView = findViewById(R.id.text_wallet_balance);
+        walletValueView = findViewById(R.id.text_wallet_value);
 
         context = getApplicationContext();
         activity = MainActivity.this;
@@ -83,14 +79,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        client = new Client(this);
-        Updater updater = new Updater();
-        trader = new Trader(updater, client,"Binance");
-        client.setTrader(trader);
+        if (!loadData()) {
+            System.out.println("new data");
+            client = new Client(this);
+            Updater updater = new Updater();
+            trader = new Trader(updater, client, "Binance");
+            client.setTrader(trader);
 
-        Map<String, Double> wallet = new HashMap<>();
-        client.setWallet(new Wallet(wallet, 10000.0, client)); //10000 usdt as start budget
-        client.getWallet().addHolding("BTC", 50);
+            Map<String, Double> wallet = new HashMap<>();
+            client.setWallet(new Wallet(wallet, 10000.0)); //10000 usdt as start budget
+        }else
+            System.out.println("loaded data");
 
         updateViews();
     }
@@ -99,15 +98,22 @@ public class MainActivity extends AppCompatActivity {
      *  this gets called whenever new trade information is received and the views should be updated
      */
     public void updateViews() {
-        currencyView.setText(client.printCurrencies("BTC"));
-        client.getWallet().printWallet(walletView, "LTC");
+        client.printCurrencies(currencyView, "BTC");
+        client.getWallet().printWallet(walletView, "USDT", client);
+        walletValueView.setText(client.getWallet().printWalletValue());
         balanceView.setText(client.getWallet().printBalance());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //saveData();
+        saveData();
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        saveData();
     }
 
     /**
@@ -116,31 +122,42 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean loadData(){
         //not finished yet
-        return false;
-        /*
         //laad alle data die opgeslagen staat op het apparaat, als er niks staat return false
-        File file = new File(getDir("data", Context.MODE_PRIVATE), "wallet");
+        File file = new File(getDir("data", Context.MODE_PRIVATE), "cryptojoint");
         if (file.exists()) {
             try {
                 ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file));
-                client.setCurrencies((List<Currency>) inputStream.readObject());
+
+                client = new Client(this);
+
+                client.setCurrencies((ArrayList<CurrencyTuple>) inputStream.readObject());
                 client.setWallet((Wallet) inputStream.readObject());
+
+
+                Updater updater = new Updater();
+                trader = new Trader(updater, client, "Binance");
+                trader.setTrades((ArrayList<Trade>) inputStream.readObject());
+                trader.setBuys((ArrayList<MoneyTrade>) inputStream.readObject());
+                trader.setSells((ArrayList<MoneyTrade>) inputStream.readObject());
+
+                client.setTrader(trader);
+
+                updateViews();
+
                 inputStream.close();
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return false;*/
+        return false;
     }
 
     /**
      *  saves wallet and trader data to device
      */
-    /*
     public void saveData(){
-        //not finished yet
-        File file = new File(getDir("data", Context.MODE_PRIVATE), "wallet");
+        File file = new File(getDir("data", Context.MODE_PRIVATE), "cryptojoint");
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -152,12 +169,17 @@ public class MainActivity extends AppCompatActivity {
             ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file));
             outputStream.writeObject(client.getCurrencies());
             outputStream.writeObject(client.getWallet());
+            outputStream.writeObject(trader.getTrades());
+            outputStream.writeObject(trader.getBuys());
+            outputStream.writeObject(trader.getSells());
             outputStream.flush();
             outputStream.close();
+            System.out.println("data saved");
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }*/
+        System.out.println("not saved");
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

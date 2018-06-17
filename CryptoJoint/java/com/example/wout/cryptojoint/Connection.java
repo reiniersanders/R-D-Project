@@ -18,7 +18,7 @@ public class Connection extends AsyncTask {
         try {
             APIBinance api = new APIBinance("BTCUSDT", "https://api.binance.com/api/v3/ticker/price");
             client.setCurrencies(api.getSymbols());
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(Trader.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
